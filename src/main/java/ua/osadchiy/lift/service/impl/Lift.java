@@ -1,6 +1,5 @@
 package ua.osadchiy.lift.service.impl;
 
-import lombok.Getter;
 import ua.osadchiy.lift.model.Building;
 import ua.osadchiy.lift.model.Passenger;
 import ua.osadchiy.lift.model.State;
@@ -13,69 +12,87 @@ import java.util.stream.Collectors;
 
 public class Lift implements Door, Lifting {
 
-    @Getter
     private final List<Passenger> passengersInLift = new ArrayList<>();
 
-    Building building = new Building();
+    private final Building building = new Building();
 
-    State state = State.UP;
+    private State state = State.UP;
 
     private int currentFloor = 0;
 
     private boolean isNotFull() {
-        return getPassengersInLift().size() < 5;
+        return passengersInLift.size() < 5;
+    }
+
+    private void removeExitedPassenger(Passenger passenger) {
+        if (isSuitablePassenger(passenger)) {
+            building.getCurrentFloorPeople(currentFloor).remove(passenger);
+        }
+    }
+
+    private boolean isSuitablePassenger(Passenger passenger) {
+        return addPassengerWhoIsGoingUp(passenger) || addPassengerWhoIsGoingDown(passenger);
+    }
+
+
+    private State addPassengerIfLiftEmpty(Passenger passenger) {
+        passengersInLift.add(passenger);
+        building.getCurrentFloorPeople(currentFloor).remove(passenger);
+        if (passenger.isPassengerGoingUp()) return State.UP;
+        return State.DOWN;
     }
 
     @Override
-    public void goToLift() {
+    public State moveUp() {
+        currentFloor++;
+        return State.UP;
+    }
+
+    @Override
+    public State moveDown() {
+        currentFloor--;
+        return State.DOWN;
+    }
+
+    @Override
+    public void goOut() {
+        for (int index = 0; index < passengersInLift.size(); index++) {
+            Passenger passenger = passengersInLift.get(index);
+            if (passenger.getWhereToGo() == currentFloor) {
+                building.getCurrentFloorPeople(currentFloor).add(genNewFloorForPassenger(passenger, currentFloor));
+                passengersInLift.remove(passenger);
+                index--;
+            }
+        }
+    }
+
+    @Override
+    public void goTo() {
         List<Passenger> passengers = building.getCurrentFloorPeople(currentFloor);
         for (int index = 0; index < passengers.size() && isNotFull(); index++) {
-                if(passengersInLift.isEmpty()) {
-                    addPassengerIfLiftEmpty(passengers, index);
-                } else {
-                    if (addPassengerWhoIsGoingUp(passengers.get(index)) || addPassengerWhoIsGoingDown(passengers.get(index))) {
-                        building.getCurrentFloorPeople(currentFloor).remove(passengers.get(index));
-                    }
+            Passenger passenger = passengers.get(index);
+            if (passengersInLift.isEmpty()) {
+                state = addPassengerIfLiftEmpty(passenger);
+            } else {
+                removeExitedPassenger(passenger);
             }
         }
     }
 
-
-    private void addPassengerIfLiftEmpty(List<Passenger> passengers, int index) {
-        passengersInLift.add(passengers.get(index));
-        if (passengers.get(index).isPassengerGoingUp()) {
-            state = State.UP;
-        } else state = State.DOWN;
-        building.getCurrentFloorPeople(currentFloor).remove(passengers.get(index));
-    }
-
-    @Override
-    public void goOutFromLift() {
-        if(!passengersInLift.isEmpty()) {
-            for (int i = 0; i < passengersInLift.size(); i++) {
-                if (passengersInLift.get(i).getWhereToGo() == currentFloor) {
-                    Passenger passenger = passengersInLift.get(i);
-                    passenger.setCurrentFloor(currentFloor);
-                    passenger.setWhereToGo(currentFloor);
-                    building.getCurrentFloorPeople(currentFloor).add(passenger);
-                    passengersInLift.remove(passengersInLift.get(i));
-                    System.out.println();
-                    i--;
-                }
-            }
-        }
+    private Passenger genNewFloorForPassenger(Passenger passenger, int currentFloor) {
+        passenger.setCurrentFloor(currentFloor);
+        passenger.setWhereToGo(currentFloor);
+        return passenger;
     }
 
     private boolean addPassengerWhoIsGoingUp(Passenger passenger) {
-        if (!passenger.isPassengerGoingUp() || state != State.UP) return false;
-        passengersInLift.add(passenger);
-        return true;
+        if (!passenger.isPassengerGoingUp() || State.UP != state) return false;
+        return passengersInLift.add(passenger);
     }
 
     private boolean addPassengerWhoIsGoingDown(Passenger passenger) {
-        if (!passenger.isPassengerGoingDown() || state != State.DOWN) return false;
-        passengersInLift.add(passenger);
-        return true;
+        if (!passenger.isPassengerGoingDown() || State.DOWN != state) return false;
+        return passengersInLift.add(passenger);
     }
 
     public List<String> wherePassengersWantToGo() {
@@ -84,63 +101,30 @@ public class Lift implements Door, Lifting {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public void moveUp() {
-        currentFloor++;
-    }
-
-    @Override
-    public void moveDown() {
-        currentFloor--;
-    }
 
     private boolean isAllPassengersAreGoingDown() {
-        return state == State.DOWN && getPassengersInLift()
+        return state == State.DOWN && passengersInLift
                 .stream()
                 .allMatch(passenger -> passenger.getWhereToGo() < currentFloor);
-    }
-
-    private boolean isAllPassengersAreGoingUp() {
-        return state == State.UP && getPassengersInLift()
-                .stream()
-                .allMatch(passenger -> passenger.getWhereToGo() > currentFloor);
-    }
-
-    private boolean isGroundFloor() {
-        return currentFloor == 0;
     }
 
     private boolean isTopFloor() {
         return currentFloor == Building.getCountOfFloors() - 1;
     }
 
-    private void makeStep() {
-        goOutFromLift();
+    private boolean firstCondition() {
+        return isTopFloor() || (isAllPassengersAreGoingDown() && !passengersInLift.isEmpty());
+    }
 
-        if (isTopFloor()) {
-            state = State.DOWN;
-            goToLift();
-            moveDown();
-        } else if(isGroundFloor()) {
-            state = State.UP;
-            goToLift();
-            moveUp();
-        } else if (passengersInLift.isEmpty() && state == State.UP) {
-            goToLift();
-            moveUp();
-        } else if (passengersInLift.isEmpty() && state == State.DOWN) {
-            goToLift();
-            moveDown();
-        } else if (isAllPassengersAreGoingUp()) {
-            state = State.UP;
-            goToLift();
-            moveUp();
-        } else if (isAllPassengersAreGoingDown() ) {
-            state = State.DOWN;
-            goToLift();
-            moveDown();
+    private boolean secondCondition() {
+        return passengersInLift.isEmpty() && state == State.DOWN && currentFloor != 0;
+    }
+
+    private State makeStep() {
+        if (!passengersInLift.isEmpty()) {
+            goOut();
         }
-
+        return firstCondition() || secondCondition() ? moveDown() : moveUp();
     }
 
     public void start(int countOfSteps) {
@@ -148,9 +132,10 @@ public class Lift implements Door, Lifting {
             System.out.println("************* " + step + " ************");
             System.out.println("LIFT IS GOING " + state);
             System.out.println("CURRENT FLOOR: " + (currentFloor + 1));
-            makeStep();
+            goTo();
+            state = makeStep();
+            System.out.println(state);
             System.out.println("PASSENGERS GO TO: " + wherePassengersWantToGo());
         }
     }
-
 }

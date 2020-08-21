@@ -8,11 +8,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Building {
-
+    @Getter
     private static final int countOfFloors = RandomNumber.getNumber(5, 20);
 
-    @Getter
-    private List<Floor> floors;
+    private final List<Floor> floors;
 
     public Building() {
         floors = fillingLiftWithFloors();
@@ -20,10 +19,6 @@ public class Building {
 
     private List<Floor> fillingLiftWithFloors() {
         return Stream.generate(Floor::new).limit(countOfFloors).collect(Collectors.toList());
-    }
-
-    public static int getCountOfFloors() {
-        return countOfFloors;
     }
 
     public List<Passenger> getCurrentFloorPeople(int currentFloor) {

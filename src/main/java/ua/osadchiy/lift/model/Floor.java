@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 public class Floor implements Supplier<Passenger> {
 
     @Getter
-    private List<Passenger> passengersOnFloor;
+    private final List<Passenger> passengersOnFloor;
     private static int counter = 0;
 
     public Floor() {

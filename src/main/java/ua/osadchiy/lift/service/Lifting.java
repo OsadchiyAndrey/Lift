@@ -1,9 +1,11 @@
 package ua.osadchiy.lift.service;
 
+import ua.osadchiy.lift.model.State;
+
 public interface Lifting {
 
-    void moveUp();
+    State moveUp();
 
-    void moveDown();
+    State moveDown();
 
 }

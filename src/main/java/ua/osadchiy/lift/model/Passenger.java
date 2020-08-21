@@ -1,11 +1,13 @@
 package ua.osadchiy.lift.model;
 
 import lombok.Getter;
+import lombok.Setter;
 import ua.osadchiy.lift.Utils.RandomNumber;
 
 @Getter
 public class Passenger {
 
+    @Setter
     private int currentFloor;
     private int whereToGo;
 
@@ -32,10 +34,6 @@ public class Passenger {
 
     public boolean isPassengerGoingDown() {
         return getCurrentFloor() > getWhereToGo();
-    }
-
-    public void setCurrentFloor(int currentFloor) {
-        this.currentFloor = currentFloor;
     }
 
 }
