@@ -1,5 +1,6 @@
 package ua.osadchiy.lift.service.impl;
 
+import lombok.Getter;
 import ua.osadchiy.lift.model.Building;
 import ua.osadchiy.lift.model.Passenger;
 import ua.osadchiy.lift.model.State;
@@ -13,12 +14,15 @@ import java.util.stream.Collectors;
 
 public class Lift implements Door, Lifting {
 
+    @Getter
     private List<Passenger> passengersInLift = new ArrayList<>();
 
     private final Building building = new Building();
 
+    @Getter
     private State state = State.UP;
 
+    @Getter
     private int currentFloor = 0;
 
     private boolean isNotFull() {

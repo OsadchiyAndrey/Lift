@@ -3,7 +3,7 @@ package ua.osadchiy.lift.Utils;
 import java.util.Random;
 
 public class RandomNumber {
-    private static final Random rand = new Random();
+    private static final Random rand = new Random(40);
 
     public static int getNumber(int max) {
         return rand.nextInt(max);

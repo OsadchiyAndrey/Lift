@@ -8,9 +8,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Building {
+
     @Getter
     private static final int countOfFloors = RandomNumber.getNumber(5, 20);
 
+    @Getter
     private final List<Floor> floors;
 
     public Building() {
