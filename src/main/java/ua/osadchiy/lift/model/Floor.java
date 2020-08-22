@@ -29,6 +29,5 @@ public class Floor implements Supplier<Passenger> {
         return new Passenger(counter);
     }
 
-
 }
 

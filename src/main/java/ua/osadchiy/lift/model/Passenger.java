@@ -25,7 +25,7 @@ public class Passenger {
 
     @Override
     public String toString() {
-        return String.valueOf(whereToGo);
+        return String.valueOf(whereToGo + 1);
     }
 
     public boolean isPassengerGoingUp() {

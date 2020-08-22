@@ -1,9 +1,13 @@
 package ua.osadchiy.lift.service;
 
+import ua.osadchiy.lift.model.Passenger;
+
+import java.util.List;
+
 public interface Door {
 
-    void goTo();
+    List<Passenger> goTo();
 
-    void goOut();
+    List<Passenger> goOut();
 
 }

@@ -7,12 +7,13 @@ import ua.osadchiy.lift.service.Door;
 import ua.osadchiy.lift.service.Lifting;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Lift implements Door, Lifting {
 
-    private final List<Passenger> passengersInLift = new ArrayList<>();
+    private List<Passenger> passengersInLift = new ArrayList<>();
 
     private final Building building = new Building();
 
@@ -38,8 +39,7 @@ public class Lift implements Door, Lifting {
     private State addPassengerIfLiftEmpty(Passenger passenger) {
         passengersInLift.add(passenger);
         building.getCurrentFloorPeople(currentFloor).remove(passenger);
-        if (passenger.isPassengerGoingUp()) return State.UP;
-        return State.DOWN;
+        return passenger.isPassengerGoingUp() ? State.UP : State.DOWN;
     }
 
     @Override
@@ -55,19 +55,20 @@ public class Lift implements Door, Lifting {
     }
 
     @Override
-    public void goOut() {
-        for (int index = 0; index < passengersInLift.size(); index++) {
-            Passenger passenger = passengersInLift.get(index);
+    public List<Passenger> goOut() {
+        Iterator<Passenger> iterator = passengersInLift.iterator();
+        while (iterator.hasNext()) {
+            Passenger passenger = iterator.next();
             if (passenger.getWhereToGo() == currentFloor) {
                 building.getCurrentFloorPeople(currentFloor).add(genNewFloorForPassenger(passenger, currentFloor));
-                passengersInLift.remove(passenger);
-                index--;
+                iterator.remove();
             }
         }
+        return passengersInLift;
     }
 
     @Override
-    public void goTo() {
+    public List<Passenger> goTo() {
         List<Passenger> passengers = building.getCurrentFloorPeople(currentFloor);
         for (int index = 0; index < passengers.size() && isNotFull(); index++) {
             Passenger passenger = passengers.get(index);
@@ -77,6 +78,7 @@ public class Lift implements Door, Lifting {
                 removeExitedPassenger(passenger);
             }
         }
+        return passengersInLift;
     }
 
     private Passenger genNewFloorForPassenger(Passenger passenger, int currentFloor) {
@@ -121,18 +123,18 @@ public class Lift implements Door, Lifting {
     }
 
     private State makeStep() {
-        if (!passengersInLift.isEmpty()) {
-            goOut();
-        }
         return firstCondition() || secondCondition() ? moveDown() : moveUp();
     }
 
     public void start(int countOfSteps) {
         for (int step = 1; step <= countOfSteps; step++) {
-            System.out.println("************* " + step + " ************");
+            System.out.println("************* " + step + " *************");
             System.out.println("LIFT IS GOING " + state);
             System.out.println("CURRENT FLOOR: " + (currentFloor + 1));
-            goTo();
+            passengersInLift = goTo();
+            if (!passengersInLift.isEmpty()) {
+                passengersInLift = goOut();
+            }
             state = makeStep();
             System.out.println(state);
             System.out.println("PASSENGERS GO TO: " + wherePassengersWantToGo());
