@@ -1,7 +1,7 @@
 package ua.osadchiy.lift.model;
 
 import lombok.Getter;
-import ua.osadchiy.lift.Utils.RandomNumber;
+import ua.osadchiy.lift.utils.RandomNumber;
 
 import java.util.List;
 import java.util.stream.Collectors;

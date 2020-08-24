@@ -8,34 +8,36 @@ import ua.osadchiy.lift.model.State;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 class LiftTest {
 
     private final Lift lift = new Lift();
     private final Building building = new Building();
 
     @Test
-    void moveUp() {
+    void shouldMoveTheLiftOneFloorUpAndReturnStateUp() {
         lift.moveUp();
-        if (lift.getCurrentFloor() != 1) throw new AssertionError();
-        if (lift.moveUp() != State.UP) throw new AssertionError();
+        assertEquals(lift.getCurrentFloor(), 1);
+        assertSame(lift.moveUp(), State.UP);
     }
 
     @Test
-    void moveDown() {
+    void shouldMoveTheLiftOneFloorUpAndReturnStateDown() {
         lift.moveUp();
         lift.moveDown();
-        if (lift.getCurrentFloor() != 0) throw new AssertionError();
-        if (lift.moveDown() != State.DOWN) throw new AssertionError();
+        assertEquals(lift.getCurrentFloor(),0);
+        assertSame(lift.moveDown(), State.DOWN);
     }
 
     @Test
-    void goTo() {
-        assert getNotEmptyLift(new ArrayList<>())
+    void shouldMovePassengerFromFloorToLift() {
+        assertTrue(getNotEmptyLift(new ArrayList<>())
                 .stream()
                 .anyMatch(passenger -> !building.getFloors()
                         .get(lift.getCurrentFloor())
                         .getPassengersOnFloor()
-                        .contains(passenger));
+                        .contains(passenger)));
     }
 
     private List<Passenger> getNotEmptyLift(List<Passenger> passengersInLift) {
@@ -47,8 +49,8 @@ class LiftTest {
     }
 
     @Test
-    void goOut() {
-        assert isPassengersGoOut();
+    void shouldDropPassengersFormLift() {
+        assertTrue(isPassengersGoOut());
     }
 
     private boolean isPassengersGoOut() {

@@ -7,7 +7,7 @@ class FloorTest {
     private final Floor floor = new Floor();
 
     @Test
-    void get() {
+    void shouldReturnNewPassengers() {
         if (!floor.get().getClass().getName().equals(Passenger.class.getName())) throw new AssertionError();
     }
 }

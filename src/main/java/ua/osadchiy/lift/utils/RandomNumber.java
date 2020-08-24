@@ -1,4 +1,4 @@
-package ua.osadchiy.lift.Utils;
+package ua.osadchiy.lift.utils;
 
 import java.util.Random;
 

@@ -135,13 +135,15 @@ public class Lift implements Door, Lifting {
             System.out.println("************* " + step + " *************");
             System.out.println("LIFT IS GOING " + state);
             System.out.println("CURRENT FLOOR: " + (currentFloor + 1));
+            System.out.println("PEOPLE ON CURRENT FLOOR BEFORE ARRIVING: " + building.getCurrentFloorPeople(currentFloor));
             passengersInLift = goTo();
             if (!passengersInLift.isEmpty()) {
                 passengersInLift = goOut();
             }
+            System.out.println("PEOPLE ON CURRENT FLOOR AFTER ARRIVING: " + building.getCurrentFloorPeople(currentFloor));
             state = makeStep();
             System.out.println(state);
-            System.out.println("PASSENGERS GO TO: " + wherePassengersWantToGo());
+            System.out.println("PASSENGERS IN LIFT GO TO: " + wherePassengersWantToGo());
         }
     }
 }

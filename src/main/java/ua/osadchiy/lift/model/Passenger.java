@@ -2,7 +2,7 @@ package ua.osadchiy.lift.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import ua.osadchiy.lift.Utils.RandomNumber;
+import ua.osadchiy.lift.utils.RandomNumber;
 
 @Getter
 public class Passenger {

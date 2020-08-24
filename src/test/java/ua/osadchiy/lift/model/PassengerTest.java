@@ -1,7 +1,9 @@
 package ua.osadchiy.lift.model;
 
-
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PassengerTest {
 
@@ -9,13 +11,13 @@ public class PassengerTest {
 
 
     @Test
-    void setWhereToGo() {
-        if (passenger.getWhereToGo() == passenger.getCurrentFloor()) throw new AssertionError();
+    void shouldSetValueDifferentFromWhereToGo() {
+        assertTrue(passenger.getWhereToGo() != passenger.getCurrentFloor());
     }
 
     @Test
-    void setCurrentFloor() {
+    void shouldSetCurrentFloorRightly() {
         passenger.setCurrentFloor(2);
-        assert 2 == passenger.getCurrentFloor();
+        assertEquals(passenger.getCurrentFloor(), 2);
     }
 }
