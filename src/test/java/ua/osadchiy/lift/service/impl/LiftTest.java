@@ -32,12 +32,18 @@ class LiftTest {
 
     @Test
     void shouldMovePassengerFromFloorToLift() {
-        assertTrue(getNotEmptyLift(new ArrayList<>())
+        final List<Passenger> notEmptyLift = getNotEmptyLift(new ArrayList<>());
+        assertNotNull(notEmptyLift);
+        assertTrue(isMovePassengerFromFloorToLift(notEmptyLift));
+    }
+
+    private boolean isMovePassengerFromFloorToLift(List<Passenger> passengers) {
+        return passengers
                 .stream()
                 .anyMatch(passenger -> !building.getFloors()
                         .get(lift.getCurrentFloor())
                         .getPassengersOnFloor()
-                        .contains(passenger)));
+                        .contains(passenger));
     }
 
     private List<Passenger> getNotEmptyLift(List<Passenger> passengersInLift) {
@@ -50,11 +56,12 @@ class LiftTest {
 
     @Test
     void shouldDropPassengersFormLift() {
-        assertTrue(isPassengersGoOut());
+        List<Passenger> passengers = getNotEmptyLift(new ArrayList<>());
+        assertNotNull(passengers);
+        assertTrue(isPassengersGoOut(passengers));
     }
 
-    private boolean isPassengersGoOut() {
-        List<Passenger> passengers = getNotEmptyLift(new ArrayList<>());
+    private boolean isPassengersGoOut(List<Passenger> passengers) {
         List<Passenger> oldPassengers = new ArrayList<>(passengers);
         while (lift.getCurrentFloor() < Building.getCountOfFloors()) {
             lift.moveUp();

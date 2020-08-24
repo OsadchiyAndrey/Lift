@@ -2,12 +2,15 @@ package ua.osadchiy.lift.model;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 class FloorTest {
 
     private final Floor floor = new Floor();
 
     @Test
     void shouldReturnNewPassengers() {
-        if (!floor.get().getClass().getName().equals(Passenger.class.getName())) throw new AssertionError();
+        final boolean isPassenger = !floor.get().getClass().getName().equals(Passenger.class.getName());
+        assertTrue(isPassenger);
     }
 }
