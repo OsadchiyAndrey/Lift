@@ -1,1 +1,4 @@
-/home/osadchiy/Desktop/Lift/src/test/java/ua/osadchiy/lift/LiftTest.java
+/home/osadchiy/Desktop/Lift/src/test/java/ua/osadchiy/lift/model/BuildingTest.java
+/home/osadchiy/Desktop/Lift/src/test/java/ua/osadchiy/lift/model/PassengerTest.java
+/home/osadchiy/Desktop/Lift/src/test/java/ua/osadchiy/lift/model/FloorTest.java
+/home/osadchiy/Desktop/Lift/src/test/java/ua/osadchiy/lift/service/impl/LiftTest.java

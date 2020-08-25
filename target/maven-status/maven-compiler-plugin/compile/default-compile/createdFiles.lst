@@ -1,6 +1,9 @@
-ua/osadchiy/lift/Lift.class
-ua/osadchiy/lift/LiftI.class
-ua/osadchiy/lift/State.class
+ua/osadchiy/lift/model/Building.class
+ua/osadchiy/lift/service/Door.class
 ua/osadchiy/lift/Main.class
-ua/osadchiy/lift/Passenger.class
-ua/osadchiy/lift/Floor.class
+ua/osadchiy/lift/model/Passenger.class
+ua/osadchiy/lift/utils/RandomNumber.class
+ua/osadchiy/lift/service/impl/Lift.class
+ua/osadchiy/lift/model/Floor.class
+ua/osadchiy/lift/model/State.class
+ua/osadchiy/lift/service/Lifting.class

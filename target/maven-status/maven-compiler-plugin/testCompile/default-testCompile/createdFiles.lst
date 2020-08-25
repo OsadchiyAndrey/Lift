@@ -1,1 +1,4 @@
-ua/osadchiy/lift/LiftTest.class
+ua/osadchiy/lift/model/FloorTest.class
+ua/osadchiy/lift/model/PassengerTest.class
+ua/osadchiy/lift/model/BuildingTest.class
+ua/osadchiy/lift/service/impl/LiftTest.class

@@ -29,10 +29,11 @@ public class Lift implements Door, Lifting {
         return passengersInLift.size() < 5;
     }
 
-    private void removeExitedPassenger(Passenger passenger) {
+    private boolean removeExitedPassenger(Passenger passenger) {
         if (isSuitablePassenger(passenger)) {
-            building.getCurrentFloorPeople(currentFloor).remove(passenger);
+            return (building.getCurrentFloorPeople(currentFloor).remove(passenger));
         }
+        return false;
     }
 
     private boolean isSuitablePassenger(Passenger passenger) {
@@ -78,9 +79,8 @@ public class Lift implements Door, Lifting {
             Passenger passenger = passengers.get(index);
             if (passengersInLift.isEmpty()) {
                 state = addPassengerIfLiftEmpty(passenger);
-            } else {
-                removeExitedPassenger(passenger);
-            }
+                index--;
+            } else if (removeExitedPassenger(passenger)) index--;
         }
         return passengersInLift;
     }
@@ -118,16 +118,19 @@ public class Lift implements Door, Lifting {
         return currentFloor == Building.getCountOfFloors() - 1;
     }
 
-    private boolean firstCondition() {
-        return isTopFloor() || (isAllPassengersAreGoingDown() && !passengersInLift.isEmpty());
-    }
-
-    private boolean secondCondition() {
-        return passengersInLift.isEmpty() && state == State.DOWN && currentFloor != 0;
+    private boolean isGroundFloor() {
+        return currentFloor == 0;
     }
 
     private State makeStep() {
-        return firstCondition() || secondCondition() ? moveDown() : moveUp();
+        final boolean moveDownFCondition = isTopFloor() || (isAllPassengersAreGoingDown() && !passengersInLift.isEmpty());
+        final boolean moveDownSCondition = passengersInLift.isEmpty() && state == State.DOWN && !isGroundFloor();
+        return moveDownFCondition || moveDownSCondition ? moveDown() : moveUp();
+    }
+
+    private void isBoundaries() {
+        if (isGroundFloor()) state = State.UP;
+        if (isTopFloor()) state = State.DOWN;
     }
 
     public void start(int countOfSteps) {
@@ -136,6 +139,7 @@ public class Lift implements Door, Lifting {
             System.out.println("LIFT IS GOING " + state);
             System.out.println("CURRENT FLOOR: " + (currentFloor + 1));
             System.out.println("PEOPLE ON CURRENT FLOOR BEFORE ARRIVING: " + building.getCurrentFloorPeople(currentFloor));
+            isBoundaries();
             passengersInLift = goTo();
             if (!passengersInLift.isEmpty()) {
                 passengersInLift = goOut();
